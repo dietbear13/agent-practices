@@ -10,7 +10,7 @@
 Откройте своего агента (Claude Code, Codex или другого) в папке проекта и вставьте:
 
 ```
-Изучи https://github.com/OWNER/REPO/blob/main/AGENT-GUIDE.md и действуй по нему:
+Изучи https://github.com/dietbear13/agent-practices/blob/main/AGENT-GUIDE.md и действуй по нему:
 сравни мою текущую настройку агента с практиками оттуда и предложи, что улучшить.
 Ничего не меняй без моего согласия.
 ```
