@@ -1,0 +1,496 @@
+{
+  "schema_version": 1,
+  "blocks": [
+    {
+      "id": "core/adopt-external",
+      "title": "Адаптация чужого MCP и репозиториев",
+      "step": 2,
+      "types": [
+        "tool",
+        "skill"
+      ],
+      "summary": "Аудит чужого инструмента до установки: постоянная цена в контексте, покрытие задач, опасные ручки — и сведение к одному из трёх исходов.",
+      "why": "Ставить чужую систему целиком — то, из-за чего через три недели половина инструментов ни разу не запускалась, а на простой вопрос агент тянет сервис без доступа. Между «нашёл» и «работает» должен стоять разбор.",
+      "requires": [
+        "core/task-inventory"
+      ],
+      "presets": [
+        "adopt",
+        "solo-seo",
+        "agency-seo"
+      ],
+      "placeholders": [],
+      "dirs": [],
+      "files": [
+        {
+          "src": "tools/mcp_audit.py",
+          "dst": "tools/mcp_audit.py",
+          "class": "generated",
+          "note": "Поднимает сервер, забирает список инструментов, считает постоянную цену. Ничего не вызывает.",
+          "sha256": "03796424a3efd12c00a4184ae45b8cd641fc4bf62861b364bca0348f3e964d7b"
+        },
+        {
+          "src": "skills/adapt-external/SKILL.md",
+          "dst": ".claude/skills/adapt-external/SKILL.md",
+          "class": "owned",
+          "note": "",
+          "sha256": "c8412e6a26ba0337f7f3688fcf1f2421fa8b907c1ba0c34639322a9fd3a9d4c2"
+        },
+        {
+          "src": "skills/adapt-external/SKILL.md",
+          "dst": ".agents/skills/adapt-external/SKILL.md",
+          "class": "owned",
+          "note": "",
+          "sha256": "c8412e6a26ba0337f7f3688fcf1f2421fa8b907c1ba0c34639322a9fd3a9d4c2"
+        }
+      ],
+      "path": "blocks/core/adopt-external"
+    },
+    {
+      "id": "core/dossier",
+      "title": "Досье проекта",
+      "step": 3,
+      "types": [
+        "template",
+        "skill"
+      ],
+      "summary": "Факты о компании с источниками и раздел «Неизвестно» вместо догадок.",
+      "why": "Узкое место генерации — не модель, а фактура. Без досье каждый новый чат придумывает компанию заново: правдоподобные условия и цифры, которых нет. Чинится не промпт, а досье.",
+      "requires": [
+        "core/project-files"
+      ],
+      "presets": [
+        "agency-seo",
+        "content"
+      ],
+      "placeholders": [
+        "PROJECT_NAME"
+      ],
+      "dirs": [],
+      "files": [
+        {
+          "src": "files/DOSSIER.md.tpl",
+          "dst": "DOSSIER.md",
+          "class": "owned",
+          "note": "Факты проекта. Ведёт человек, заполняет скилл, ревью обязательно.",
+          "sha256": "95a4560018e696f2b8aa1ccdb6270e6ee40c0ccd0b135b1845fe9840635718da"
+        },
+        {
+          "src": "skills/dossier-fill/SKILL.md",
+          "dst": ".claude/skills/dossier-fill/SKILL.md",
+          "class": "owned",
+          "note": "",
+          "sha256": "64b5eecf2bf55294cc0d2a24a27e9a77eb02a8cc425157ece143954805e0a7ba"
+        },
+        {
+          "src": "skills/dossier-fill/SKILL.md",
+          "dst": ".agents/skills/dossier-fill/SKILL.md",
+          "class": "owned",
+          "note": "",
+          "sha256": "64b5eecf2bf55294cc0d2a24a27e9a77eb02a8cc425157ece143954805e0a7ba"
+        }
+      ],
+      "path": "blocks/core/dossier"
+    },
+    {
+      "id": "core/plan-mode",
+      "title": "План и вопросы до работы",
+      "step": 4,
+      "types": [
+        "template",
+        "skill"
+      ],
+      "summary": "PLAN.md с чекбоксами, поиск серых зон до начала работы и выполнение по этапу за сессию.",
+      "why": "Одна итерация вопросов дешевле трёх итераций правок. План живёт файлом, а не сообщением, потому что сообщение не переживает ни новую сессию, ни сжатие контекста.",
+      "requires": [
+        "core/project-files"
+      ],
+      "presets": [
+        "minimal",
+        "solo-seo",
+        "agency-seo",
+        "content"
+      ],
+      "placeholders": [],
+      "dirs": [],
+      "files": [
+        {
+          "src": "files/PLAN.md.tpl",
+          "dst": "references/PLAN.md",
+          "class": "generated",
+          "note": "Шаблон плана. Копируется под каждую задачу.",
+          "sha256": "88949f0a318f58863cc6d6b5be3366e8fd2a1bbe74ede5ec84ddaf477ce9005d"
+        },
+        {
+          "src": "skills/plan-stages/SKILL.md",
+          "dst": ".claude/skills/plan-stages/SKILL.md",
+          "class": "owned",
+          "note": "",
+          "sha256": "245945d3b81011ad1fa28d10f0fbdd26b577e33f03e0dbd6cc415e6083da6657"
+        },
+        {
+          "src": "skills/plan-stages/SKILL.md",
+          "dst": ".agents/skills/plan-stages/SKILL.md",
+          "class": "owned",
+          "note": "",
+          "sha256": "245945d3b81011ad1fa28d10f0fbdd26b577e33f03e0dbd6cc415e6083da6657"
+        },
+        {
+          "src": "skills/stage-run/SKILL.md",
+          "dst": ".claude/skills/stage-run/SKILL.md",
+          "class": "owned",
+          "note": "",
+          "sha256": "248155ff44bf2c652ffa21c6f15b00f0c5142c6c086dbdcaa2ebcf3dea8525d2"
+        },
+        {
+          "src": "skills/stage-run/SKILL.md",
+          "dst": ".agents/skills/stage-run/SKILL.md",
+          "class": "owned",
+          "note": "",
+          "sha256": "248155ff44bf2c652ffa21c6f15b00f0c5142c6c086dbdcaa2ebcf3dea8525d2"
+        }
+      ],
+      "path": "blocks/core/plan-mode"
+    },
+    {
+      "id": "core/project-files",
+      "title": "Файлы проекта",
+      "step": 3,
+      "types": [
+        "template",
+        "skill"
+      ],
+      "summary": "Правила проекта, пустой каркас приоритетов, дерево папок и граница git.",
+      "why": "Лечит все три болезни третьего шага: агент не умеет в приоритеты, свалка в папках, чужой контекст. Без этого блока остальному некуда ложиться.",
+      "requires": [],
+      "presets": [
+        "minimal",
+        "adopt",
+        "solo-seo",
+        "agency-seo",
+        "content"
+      ],
+      "placeholders": [
+        "PROJECT_NAME"
+      ],
+      "dirs": [
+        "skills",
+        "tools",
+        "outputs",
+        "tasks",
+        "temp",
+        "references"
+      ],
+      "files": [
+        {
+          "src": "files/CLAUDE.md.tpl",
+          "dst": "CLAUDE.md",
+          "class": "owned",
+          "note": "Правила для Claude Code. Грузится в каждую сессию, поэтому короткий.",
+          "sha256": "ed7ecf54224d1ebcea690f0d6b5d218adca462141399aa2db3b483c2cb828b04"
+        },
+        {
+          "src": "files/CLAUDE.md.tpl",
+          "dst": "AGENTS.md",
+          "class": "owned",
+          "note": "То же тело для Codex — один источник, два назначения.",
+          "sha256": "ed7ecf54224d1ebcea690f0d6b5d218adca462141399aa2db3b483c2cb828b04"
+        },
+        {
+          "src": "files/PRIORITIES.md.tpl",
+          "dst": "PRIORITIES.md",
+          "class": "owned",
+          "note": "Ставится ПУСТЫМ. Заполняется только после реальных ошибок агента.",
+          "sha256": "8919d1432699a71ad3818c8117631d5cc6c4cf88993646701ac39f92f8f86e62"
+        },
+        {
+          "src": "files/gitignore.tpl",
+          "dst": ".gitignore",
+          "class": "generated",
+          "note": "Граница между системой и результатами работы.",
+          "sha256": "d875fa2a77831ed7b0adc38b38ef4c947c2c266f79aec51b8235a8cddcad9c1b"
+        },
+        {
+          "src": "files/env.example.tpl",
+          "dst": ".env.example",
+          "class": "generated",
+          "note": "Имена ключей без значений. Значения вписывает человек в .env.",
+          "sha256": "7602a7326dc9fa9f9649992cc1f45e846feda66b6a26b14f45cbe77291105333"
+        }
+      ],
+      "path": "blocks/core/project-files"
+    },
+    {
+      "id": "core/script-runtime",
+      "title": "Каркас скрипта регулярной задачи",
+      "step": 6,
+      "types": [
+        "tool"
+      ],
+      "summary": "Стоп-кран, дедупликация, ретраи и метаданные качества — кодом, а не просьбой в промпте.",
+      "why": "Регулярное делается кодом. Всё, что отличает скрипт от разового запуска — остановка по лимиту, устойчивость к перезапуску, отметка degraded — должно быть в файле, а не в тексте инструкции: текст переживает не всякую сессию.",
+      "requires": [
+        "core/project-files"
+      ],
+      "presets": [
+        "solo-seo",
+        "agency-seo"
+      ],
+      "placeholders": [],
+      "dirs": [],
+      "files": [
+        {
+          "src": "tools/runtime.py",
+          "dst": "tools/runtime.py",
+          "class": "generated",
+          "note": "Импортируется скриптами задач. Правится не здесь, а в конструкторе.",
+          "sha256": "33480aff3ec51d738a34281d841d0b27de7941e674f23b5b6ab0df03f5949e9c"
+        }
+      ],
+      "path": "blocks/core/script-runtime"
+    },
+    {
+      "id": "core/skill-design",
+      "title": "Выбор формы: скилл, агент или мультиагент",
+      "step": 4,
+      "types": [
+        "tool",
+        "reference"
+      ],
+      "summary": "Лестница форм 0→3 с сигналами подъёма и запретами. Форма считается кодом, а не выбирается на глаз.",
+      "why": "Любая ошибка в цепочке умножается на последующих этапах, поэтому усложнять форму без сработавшего сигнала дорого. Это единственное место, где решение должно быть одинаковым независимо от того, насколько убедительно человек попросил мультиагента.",
+      "requires": [
+        "core/project-files"
+      ],
+      "presets": [
+        "solo-seo",
+        "agency-seo",
+        "content"
+      ],
+      "placeholders": [],
+      "dirs": [],
+      "files": [
+        {
+          "src": "files/topology.json",
+          "dst": "references/topology.json",
+          "class": "generated",
+          "note": "Данные правила: ступени, сигналы подъёма, запреты.",
+          "sha256": "ed33e281abddcdf47d1f007772377db87548be07cb5ca2d42143748f3365e875"
+        },
+        {
+          "src": "tools/choose_topology.py",
+          "dst": "tools/choose_topology.py",
+          "class": "generated",
+          "note": "Считает низшую обоснованную форму и объясняет отказ поднять её выше.",
+          "sha256": "111a7fb18711aaea483fcf3e0e78b9005c98820eff3f13f81359340b0da8e514"
+        }
+      ],
+      "path": "blocks/core/skill-design"
+    },
+    {
+      "id": "core/task-folder",
+      "title": "Папка на задачу и манифест",
+      "step": 3,
+      "types": [
+        "tool"
+      ],
+      "summary": "Своя папка на каждую разовую задачу, манифест результатов и чистильщик всего остального.",
+      "why": "Разовые задачи засоряют проект быстрее всего, и агент потом читает их артефакты как факты. Лечится не аккуратностью, а тем, что завести папку проще, чем не завести.",
+      "requires": [
+        "core/project-files"
+      ],
+      "presets": [
+        "minimal",
+        "solo-seo",
+        "agency-seo",
+        "content"
+      ],
+      "placeholders": [],
+      "dirs": [],
+      "files": [
+        {
+          "src": "tools/new_task.py",
+          "dst": "tools/new_task.py",
+          "class": "generated",
+          "note": "Заводит tasks/ГГГГ-ММ-ДД-имя/ с manifest.json и report.md.",
+          "sha256": "16bd694c694d2b6ffc7bcd63b0c34f3b4a8d60f07f6228916cf30355353a28a0"
+        },
+        {
+          "src": "tools/cleanup_task.py",
+          "dst": "tools/cleanup_task.py",
+          "class": "generated",
+          "note": "Удаляет из папки задачи всё, чего нет в манифесте. Без --apply только показывает.",
+          "sha256": "067e08a55afe350828f5712072adee7a9bc35508db8e62bb6076a39fabb2815e"
+        }
+      ],
+      "path": "blocks/core/task-folder"
+    },
+    {
+      "id": "core/task-inventory",
+      "title": "Список задач и карта доступов",
+      "step": 1,
+      "types": [
+        "template",
+        "skill"
+      ],
+      "summary": "TASKS.md со счётчиком повторов, ACCESS.md с явным «нет доступа» и скилл разбора задачи.",
+      "why": "Задача рождается разовой и становится регулярной на третьем повторе — но этот момент не наступает сам, если повторы никто не считает. А карта доступов избавляет от вечных попыток агента дотянуться до сервиса, которого у проекта нет.",
+      "requires": [
+        "core/project-files"
+      ],
+      "presets": [
+        "minimal",
+        "solo-seo",
+        "agency-seo",
+        "content",
+        "adopt"
+      ],
+      "placeholders": [
+        "PROJECT_NAME"
+      ],
+      "dirs": [],
+      "files": [
+        {
+          "src": "files/TASKS.md.tpl",
+          "dst": "TASKS.md",
+          "class": "owned",
+          "note": "Список задач и счётчик повторов. Ведёт человек и скилл.",
+          "sha256": "430eafb401c881effa89a890df204c70f41093eeb42b48e6eca49979a3b9f66c"
+        },
+        {
+          "src": "files/ACCESS.md.tpl",
+          "dst": "ACCESS.md",
+          "class": "owned",
+          "note": "Карта доступов. Отсутствие доступа фиксируется так же явно, как наличие.",
+          "sha256": "07dedb60eb2ecaef882135a1e78e68996c8acb2a4039fcd1e5e9cdb4ef037959"
+        },
+        {
+          "src": "skills/task-triage/SKILL.md",
+          "dst": ".claude/skills/task-triage/SKILL.md",
+          "class": "owned",
+          "note": "Разбор задачи перед работой.",
+          "sha256": "b02ecf2cb086fea993d258570de9ea7cfb4cb173f4f06bfa0510e234f3b03d54"
+        },
+        {
+          "src": "skills/task-triage/SKILL.md",
+          "dst": ".agents/skills/task-triage/SKILL.md",
+          "class": "owned",
+          "note": "Тот же скилл для Codex.",
+          "sha256": "b02ecf2cb086fea993d258570de9ea7cfb4cb173f4f06bfa0510e234f3b03d54"
+        }
+      ],
+      "path": "blocks/core/task-inventory"
+    },
+    {
+      "id": "core/verify",
+      "title": "Проверка результата",
+      "step": 5,
+      "types": [
+        "tool",
+        "agent",
+        "skill",
+        "reference"
+      ],
+      "summary": "Сначала проверки кодом, затем проверяющий со свежим контекстом по рубрике. Вердикт — файлом, а не в чате.",
+      "why": "Самооценка автора работы не является проверкой: он унаследует собственные слепые зоны. Проверка кодом идёт первой не из экономии, а потому что модель не должна рассуждать о тексте, в котором ссылки мертвы, а числа не сходятся.",
+      "requires": [
+        "core/project-files"
+      ],
+      "presets": [
+        "solo-seo",
+        "agency-seo",
+        "content"
+      ],
+      "placeholders": [],
+      "dirs": [],
+      "files": [
+        {
+          "src": "files/markers.md",
+          "dst": "references/markers.md",
+          "class": "generated",
+          "note": "Легенда маркеров [?] [!] [src: URL] — общая для пишущего и проверяющего.",
+          "sha256": "cc33b000aa9a05b6ab9d9d1733abb30089f40911ba36bbc290beb33536728705"
+        },
+        {
+          "src": "files/rubric.md.tpl",
+          "dst": "references/rubric.md",
+          "class": "owned",
+          "note": "Шаблон рубрики. Дописывается под задачу, ведётся человеком.",
+          "sha256": "9fd8a2894a32e86871f29b8bbb754774867bbb1082d939b880f466ea8075e34f"
+        },
+        {
+          "src": "tools/check_links.py",
+          "dst": "tools/check_links.py",
+          "class": "generated",
+          "note": "Живые ли ссылки и есть ли источник у числовых утверждений.",
+          "sha256": "baf2d908c7a64f71c0d015fc440486b2d26d2afb0577362cbad24a1275430166"
+        },
+        {
+          "src": "agents/reviewer.md",
+          "dst": ".claude/agents/reviewer.md",
+          "class": "owned",
+          "note": "Проверяющий со свежим контекстом.",
+          "sha256": "004320dc406fec5b80a262efa05ddf44276e0560f700f6796622c4d950e42de0"
+        },
+        {
+          "src": "skills/review-run/SKILL.md",
+          "dst": ".claude/skills/review-run/SKILL.md",
+          "class": "owned",
+          "note": "Оркестровка проверки: код → рубрика → субагент → файл вердикта.",
+          "sha256": "b323780e18d7850902cfce5869e813a0e08c170e5e687dd6379f68e3f11b7909"
+        },
+        {
+          "src": "skills/review-run/SKILL.md",
+          "dst": ".agents/skills/review-run/SKILL.md",
+          "class": "owned",
+          "note": "Тот же скилл для Codex.",
+          "sha256": "b323780e18d7850902cfce5869e813a0e08c170e5e687dd6379f68e3f11b7909"
+        }
+      ],
+      "path": "blocks/core/verify"
+    }
+  ],
+  "presets": {
+    "adopt": [
+      "core/adopt-external",
+      "core/project-files",
+      "core/task-inventory"
+    ],
+    "agency-seo": [
+      "core/adopt-external",
+      "core/dossier",
+      "core/plan-mode",
+      "core/project-files",
+      "core/script-runtime",
+      "core/skill-design",
+      "core/task-folder",
+      "core/task-inventory",
+      "core/verify"
+    ],
+    "content": [
+      "core/dossier",
+      "core/plan-mode",
+      "core/project-files",
+      "core/skill-design",
+      "core/task-folder",
+      "core/task-inventory",
+      "core/verify"
+    ],
+    "minimal": [
+      "core/plan-mode",
+      "core/project-files",
+      "core/task-folder",
+      "core/task-inventory"
+    ],
+    "solo-seo": [
+      "core/adopt-external",
+      "core/plan-mode",
+      "core/project-files",
+      "core/script-runtime",
+      "core/skill-design",
+      "core/task-folder",
+      "core/task-inventory",
+      "core/verify"
+    ]
+  }
+}

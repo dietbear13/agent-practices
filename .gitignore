@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# ключи и секреты — никогда
+.env
+*.pem
+*.key
+*service-account*.json
+*credentials*.json
+
+# результаты локальных прогонов
+*.new
+.agent-kit/
+build/

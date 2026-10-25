@@ -1,0 +1,61 @@
+{
+  "id": "core/verify",
+  "title": "Проверка результата",
+  "step": 5,
+  "types": [
+    "tool",
+    "agent",
+    "skill",
+    "reference"
+  ],
+  "summary": "Сначала проверки кодом, затем проверяющий со свежим контекстом по рубрике. Вердикт — файлом, а не в чате.",
+  "why": "Самооценка автора работы не является проверкой: он унаследует собственные слепые зоны. Проверка кодом идёт первой не из экономии, а потому что модель не должна рассуждать о тексте, в котором ссылки мертвы, а числа не сходятся.",
+  "requires": [
+    "core/project-files"
+  ],
+  "presets": [
+    "solo-seo",
+    "agency-seo",
+    "content"
+  ],
+  "placeholders": [],
+  "dirs": [],
+  "files": [
+    {
+      "src": "files/markers.md",
+      "dst": "references/markers.md",
+      "class": "generated",
+      "note": "Легенда маркеров [?] [!] [src: URL] — общая для пишущего и проверяющего."
+    },
+    {
+      "src": "files/rubric.md.tpl",
+      "dst": "references/rubric.md",
+      "class": "owned",
+      "note": "Шаблон рубрики. Дописывается под задачу, ведётся человеком."
+    },
+    {
+      "src": "tools/check_links.py",
+      "dst": "tools/check_links.py",
+      "class": "generated",
+      "note": "Живые ли ссылки и есть ли источник у числовых утверждений."
+    },
+    {
+      "src": "agents/reviewer.md",
+      "dst": ".claude/agents/reviewer.md",
+      "class": "owned",
+      "note": "Проверяющий со свежим контекстом."
+    },
+    {
+      "src": "skills/review-run/SKILL.md",
+      "dst": ".claude/skills/review-run/SKILL.md",
+      "class": "owned",
+      "note": "Оркестровка проверки: код → рубрика → субагент → файл вердикта."
+    },
+    {
+      "src": "skills/review-run/SKILL.md",
+      "dst": ".agents/skills/review-run/SKILL.md",
+      "class": "owned",
+      "note": "Тот же скилл для Codex."
+    }
+  ]
+}

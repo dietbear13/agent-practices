@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "brief_id": "shape",
+  "title": "Форма системы",
+  "opens_when": "task.stages_count >= 2",
+  "_note": [
+    "Вопросы здесь — ровно сигналы из references/topology.json, заданные словами",
+    "человека. Ответы уходят в choose_topology.py, который считает форму сам.",
+    "",
+    "Модель тут ничего не выбирает намеренно: это то место, где по умолчанию",
+    "получается красиво и дорого. Запрошенная форма выше обоснованной не",
+    "разворачивается — вместо этого показывается, какого сигнала не хватило."
+  ],
+  "decided_by": "tools/choose_topology.py",
+  "questions": [
+    {
+      "id": "stages",
+      "field": "shape.stages",
+      "required": false,
+      "type": "list",
+      "ask": "Назовите шаги задачи по порядку, своими словами.",
+      "why": "Из списка получается по короткому скиллу на шаг. Один скилл — один шаг — один формат результата.",
+      "default": [],
+      "signal": "stages_count"
+    },
+    {
+      "id": "intermediate_needed_whole",
+      "field": "shape.intermediate_needed_whole",
+      "required": false,
+      "type": "bool",
+      "ask": "Следующему шагу нужен сырой результат предыдущего целиком — или достаточно выводов?",
+      "why": "Нужен целиком — это скилл: он работает в общем окне, и всё наработанное остаётся под рукой. Достаточно вывода — это агент: он отдаёт наружу только итог.",
+      "default": true,
+      "signal": "intermediate_needed_whole"
+    },
+    {
+      "id": "volume",
+      "field": "shape.volume",
+      "required": false,
+      "type": "choice",
+      "ask": "Сколько данных даёт самый объёмный шаг?",
+      "why": "Тысячи строк, которые дальше не нужны, лучше не тащить через общий контекст.",
+      "default": "small",
+      "options": [
+        { "value": "small", "label": "Десятки строк" },
+        { "value": "large", "label": "Тысячи строк" }
+      ],
+      "signal": "intermediate_volume"
+    },
+    {
+      "id": "independent_subtasks",
+      "field": "shape.independent_subtasks",
+      "required": false,
+      "type": "bool",
+      "ask": "Шаги можно делать одновременно и независимо друг от друга?",
+      "why": "Если да — их есть смысл распараллелить. Если нет, несколько агентов добавят только стыков, на которых теряется контекст.",
+      "default": false,
+      "signal": "independent_subtasks",
+      "warning": "Параллельные агенты, пишущие в одни и те же файлы, затирают работу друг друга. Каждому нужен свой файл результата."
+    },
+    {
+      "id": "needs_review",
+      "field": "shape.needs_review",
+      "required": false,
+      "type": "bool",
+      "ask": "Результат должен проверить кто-то со свежим взглядом, не видевший рассуждений?",
+      "why": "Проверяющий получает артефакт и рубрику, но не рассуждения первого — иначе унаследует его слепые зоны вместе с логикой.",
+      "default": false,
+      "signal": "needs_review",
+      "selects_blocks": ["core/verify"]
+    },
+    {
+      "id": "fits_one_context",
+      "field": "shape.fits_one_context",
+      "required": false,
+      "type": "bool",
+      "ask": "Задача влезает в один разговор — или к середине придётся напоминать, с чего начали?",
+      "why": "Не влезает — план становится файлом с чекбоксами, а каждый этап запускается новой сессией. Лечит и разрастание контекста, и потерю правил при его сжатии.",
+      "default": true,
+      "signal": "fits_one_context",
+      "selects_blocks": ["core/plan-mode"]
+    },
+    {
+      "id": "handoff_between_people",
+      "field": "shape.handoff_between_people",
+      "required": false,
+      "type": "bool",
+      "ask": "Результат передаётся другому специалисту, который продолжит работу?",
+      "why": "Между людьми передаётся артефакт фиксированного формата, а не текст из чата. Первый шаг принимающего — проверка формата кодом: невалидно — возврат, а не молчаливая обработка мусора.",
+      "default": false,
+      "signal": "handoff_between_people",
+      "selects_blocks": ["core/verify"]
+    }
+  ]
+}

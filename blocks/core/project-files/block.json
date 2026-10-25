@@ -1,0 +1,51 @@
+{
+  "id": "core/project-files",
+  "title": "Файлы проекта",
+  "step": 3,
+  "types": ["template", "skill"],
+  "summary": "Правила проекта, пустой каркас приоритетов, дерево папок и граница git.",
+  "why": "Лечит все три болезни третьего шага: агент не умеет в приоритеты, свалка в папках, чужой контекст. Без этого блока остальному некуда ложиться.",
+  "requires": [],
+  "presets": ["minimal", "adopt", "solo-seo", "agency-seo", "content"],
+  "placeholders": ["PROJECT_NAME"],
+  "dirs": [
+    "skills",
+    "tools",
+    "outputs",
+    "tasks",
+    "temp",
+    "references"
+  ],
+  "files": [
+    {
+      "src": "files/CLAUDE.md.tpl",
+      "dst": "CLAUDE.md",
+      "class": "owned",
+      "note": "Правила для Claude Code. Грузится в каждую сессию, поэтому короткий."
+    },
+    {
+      "src": "files/CLAUDE.md.tpl",
+      "dst": "AGENTS.md",
+      "class": "owned",
+      "note": "То же тело для Codex — один источник, два назначения."
+    },
+    {
+      "src": "files/PRIORITIES.md.tpl",
+      "dst": "PRIORITIES.md",
+      "class": "owned",
+      "note": "Ставится ПУСТЫМ. Заполняется только после реальных ошибок агента."
+    },
+    {
+      "src": "files/gitignore.tpl",
+      "dst": ".gitignore",
+      "class": "generated",
+      "note": "Граница между системой и результатами работы."
+    },
+    {
+      "src": "files/env.example.tpl",
+      "dst": ".env.example",
+      "class": "generated",
+      "note": "Имена ключей без значений. Значения вписывает человек в .env."
+    }
+  ]
+}

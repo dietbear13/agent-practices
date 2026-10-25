@@ -1,0 +1,50 @@
+{
+  "id": "core/plan-mode",
+  "title": "План и вопросы до работы",
+  "step": 4,
+  "types": [
+    "template",
+    "skill"
+  ],
+  "summary": "PLAN.md с чекбоксами, поиск серых зон до начала работы и выполнение по этапу за сессию.",
+  "why": "Одна итерация вопросов дешевле трёх итераций правок. План живёт файлом, а не сообщением, потому что сообщение не переживает ни новую сессию, ни сжатие контекста.",
+  "requires": [
+    "core/project-files"
+  ],
+  "presets": [
+    "minimal",
+    "solo-seo",
+    "agency-seo",
+    "content"
+  ],
+  "placeholders": [],
+  "dirs": [],
+  "files": [
+    {
+      "src": "files/PLAN.md.tpl",
+      "dst": "references/PLAN.md",
+      "class": "generated",
+      "note": "Шаблон плана. Копируется под каждую задачу."
+    },
+    {
+      "src": "skills/plan-stages/SKILL.md",
+      "dst": ".claude/skills/plan-stages/SKILL.md",
+      "class": "owned"
+    },
+    {
+      "src": "skills/plan-stages/SKILL.md",
+      "dst": ".agents/skills/plan-stages/SKILL.md",
+      "class": "owned"
+    },
+    {
+      "src": "skills/stage-run/SKILL.md",
+      "dst": ".claude/skills/stage-run/SKILL.md",
+      "class": "owned"
+    },
+    {
+      "src": "skills/stage-run/SKILL.md",
+      "dst": ".agents/skills/stage-run/SKILL.md",
+      "class": "owned"
+    }
+  ]
+}

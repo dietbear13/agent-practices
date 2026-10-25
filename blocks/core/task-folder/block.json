@@ -1,0 +1,26 @@
+{
+  "id": "core/task-folder",
+  "title": "Папка на задачу и манифест",
+  "step": 3,
+  "types": ["tool"],
+  "summary": "Своя папка на каждую разовую задачу, манифест результатов и чистильщик всего остального.",
+  "why": "Разовые задачи засоряют проект быстрее всего, и агент потом читает их артефакты как факты. Лечится не аккуратностью, а тем, что завести папку проще, чем не завести.",
+  "requires": ["core/project-files"],
+  "presets": ["minimal", "solo-seo", "agency-seo", "content"],
+  "placeholders": [],
+  "dirs": [],
+  "files": [
+    {
+      "src": "tools/new_task.py",
+      "dst": "tools/new_task.py",
+      "class": "generated",
+      "note": "Заводит tasks/ГГГГ-ММ-ДД-имя/ с manifest.json и report.md."
+    },
+    {
+      "src": "tools/cleanup_task.py",
+      "dst": "tools/cleanup_task.py",
+      "class": "generated",
+      "note": "Удаляет из папки задачи всё, чего нет в манифесте. Без --apply только показывает."
+    }
+  ]
+}

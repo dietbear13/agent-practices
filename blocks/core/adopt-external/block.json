@@ -1,0 +1,18 @@
+{
+  "id": "core/adopt-external",
+  "title": "Адаптация чужого MCP и репозиториев",
+  "step": 2,
+  "types": ["tool", "skill"],
+  "summary": "Аудит чужого инструмента до установки: постоянная цена в контексте, покрытие задач, опасные ручки — и сведение к одному из трёх исходов.",
+  "why": "Ставить чужую систему целиком — то, из-за чего через три недели половина инструментов ни разу не запускалась, а на простой вопрос агент тянет сервис без доступа. Между «нашёл» и «работает» должен стоять разбор.",
+  "requires": ["core/task-inventory"],
+  "presets": ["adopt", "solo-seo", "agency-seo"],
+  "placeholders": [],
+  "dirs": [],
+  "files": [
+    {"src": "tools/mcp_audit.py", "dst": "tools/mcp_audit.py", "class": "generated",
+     "note": "Поднимает сервер, забирает список инструментов, считает постоянную цену. Ничего не вызывает."},
+    {"src": "skills/adapt-external/SKILL.md", "dst": ".claude/skills/adapt-external/SKILL.md", "class": "owned"},
+    {"src": "skills/adapt-external/SKILL.md", "dst": ".agents/skills/adapt-external/SKILL.md", "class": "owned"}
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "core/task-inventory",
+  "title": "Список задач и карта доступов",
+  "step": 1,
+  "types": ["template", "skill"],
+  "summary": "TASKS.md со счётчиком повторов, ACCESS.md с явным «нет доступа» и скилл разбора задачи.",
+  "why": "Задача рождается разовой и становится регулярной на третьем повторе — но этот момент не наступает сам, если повторы никто не считает. А карта доступов избавляет от вечных попыток агента дотянуться до сервиса, которого у проекта нет.",
+  "requires": ["core/project-files"],
+  "presets": ["minimal", "solo-seo", "agency-seo", "content", "adopt"],
+  "placeholders": ["PROJECT_NAME"],
+  "dirs": [],
+  "files": [
+    {
+      "src": "files/TASKS.md.tpl",
+      "dst": "TASKS.md",
+      "class": "owned",
+      "note": "Список задач и счётчик повторов. Ведёт человек и скилл."
+    },
+    {
+      "src": "files/ACCESS.md.tpl",
+      "dst": "ACCESS.md",
+      "class": "owned",
+      "note": "Карта доступов. Отсутствие доступа фиксируется так же явно, как наличие."
+    },
+    {
+      "src": "skills/task-triage/SKILL.md",
+      "dst": ".claude/skills/task-triage/SKILL.md",
+      "class": "owned",
+      "note": "Разбор задачи перед работой."
+    },
+    {
+      "src": "skills/task-triage/SKILL.md",
+      "dst": ".agents/skills/task-triage/SKILL.md",
+      "class": "owned",
+      "note": "Тот же скилл для Codex."
+    }
+  ]
+}

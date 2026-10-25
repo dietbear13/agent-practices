@@ -1,0 +1,18 @@
+{
+  "id": "core/dossier",
+  "title": "Досье проекта",
+  "step": 3,
+  "types": ["template", "skill"],
+  "summary": "Факты о компании с источниками и раздел «Неизвестно» вместо догадок.",
+  "why": "Узкое место генерации — не модель, а фактура. Без досье каждый новый чат придумывает компанию заново: правдоподобные условия и цифры, которых нет. Чинится не промпт, а досье.",
+  "requires": ["core/project-files"],
+  "presets": ["agency-seo", "content"],
+  "placeholders": ["PROJECT_NAME"],
+  "dirs": [],
+  "files": [
+    {"src": "files/DOSSIER.md.tpl", "dst": "DOSSIER.md", "class": "owned",
+     "note": "Факты проекта. Ведёт человек, заполняет скилл, ревью обязательно."},
+    {"src": "skills/dossier-fill/SKILL.md", "dst": ".claude/skills/dossier-fill/SKILL.md", "class": "owned"},
+    {"src": "skills/dossier-fill/SKILL.md", "dst": ".agents/skills/dossier-fill/SKILL.md", "class": "owned"}
+  ]
+}
