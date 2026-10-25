@@ -266,7 +266,9 @@ def run(
             "уберите лишние блоки: переполненный список делает часть скиллов невидимой для модели",
         )
 
-    target = out or (Path(answers.get("project", {}).get("path", ".")) / ".agent-kit" / "plan.json")
+    # План — рабочий файл сборки, а не часть проекта: кладём его рядом с ответами
+    # брифа, чтобы в проект пользователя попадали только файлы выбранных блоков.
+    target = out or brief_path.with_name("plan.json")
     write_json_atomic(target, {"blocks": sorted(chosen), "plan": plan, "values": values})
     result.data["written"] = str(target)
     result.next = (
@@ -283,7 +285,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--preset", help="добавить блоки пресета")
     parser.add_argument("--add", action="append", default=[], help="добавить блок вручную")
     parser.add_argument("--drop", action="append", default=[], help="убрать блок")
-    parser.add_argument("--out", help="куда записать план")
+    parser.add_argument("--out", help="куда записать план (по умолчанию plan.json рядом с брифом)")
     args = parser.parse_args(argv)
 
     return run(

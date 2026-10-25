@@ -3,29 +3,28 @@
 По умолчанию — сухой прогон: показывает, что произойдёт, и ничего не пишет.
 Запись только по явному --apply.
 
-Три класса файлов, и класс задан в каталоге, а не соглашением в документации:
+Правило одно: существующий файл не перезаписывается никогда. Нет файла —
+создаём; файл есть и совпадает с нашим — пропускаем; файл есть и отличается —
+наша версия ложится рядом с суффиксом .new, оригинал остаётся. Неважно, правил
+его человек после прошлой установки или файл был там до нас.
 
-  generated — наш файл, обновляется молча, НО только если человек его не трогал.
-              Тронул (хеш разошёлся с записанным при установке) — новая версия
-              ложится рядом с суффиксом .new, оригинал остаётся.
-  owned     — файл человека с нашей заготовки: CLAUDE.md, PRIORITIES.md, тела
-              скиллов. После установки не перезаписывается никогда. Обновление
-              каталога тоже кладёт .new рядом.
-  (user)    — tasks/, outputs/, temp/, .env: этих файлов здесь нет вообще,
-              скрипт про них не знает и знать не должен.
+Служебного состояния в проекте пользователя скрипт не ведёт: в проект попадают
+только файлы выбранных блоков. Цена — обновление каталога тоже приходит как .new,
+даже для файла, которого никто не трогал. Это сознательный обмен: лишний .new
+дешевле лишнего служебного каталога в чужом проекте.
 
 Флага «перезаписать всё» нет намеренно. Именно он превращает регенерацию в
 потерю месяца правок, после которой к конструктору больше не возвращаются.
 
     python bootstrap/apply.py --target ../my-project --blocks core/project-files
     python bootstrap/apply.py --target ../my-project --preset minimal --apply
+    python bootstrap/apply.py --target ../my-project --preset minimal --platform both
 """
 
 from __future__ import annotations
 
 import argparse
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -43,33 +42,33 @@ from _common import (  # noqa: E402
     setup_io,
     sha256_text,
     substitute,
-    write_json_atomic,
     write_text_atomic,
 )
 
-STATE_DIR = ".agent-kit"
-STATE_FILE = "state.json"
-STATE_SCHEMA = 1
-
 ACTION_CREATE = "create"
-ACTION_UPDATE = "update"
 ACTION_SKIP = "skip"
 ACTION_SIDECAR = "sidecar"
 
-
-def now_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+PLATFORMS = ("claude", "codex", "both")
 
 
-def state_path(target: Path) -> Path:
-    return target / STATE_DIR / STATE_FILE
+def platform_of(dst: str) -> Optional[str]:
+    """Для какой платформы этот путь установки; None — для любой.
+
+    Один и тот же скилл в каталоге лежит дважды — под Claude Code и под Codex.
+    Ставить обе копии тому, кто пользуется одной платформой, значит класть в его
+    проект файлы, которые никто никогда не прочитает.
+    """
+    if dst == "CLAUDE.md" or dst.startswith(".claude/"):
+        return "claude"
+    if dst == "AGENTS.md" or dst.startswith(".agents/"):
+        return "codex"
+    return None
 
 
-def load_state(target: Path) -> Dict[str, Any]:
-    path = state_path(target)
-    if path.is_file():
-        return read_json(path)
-    return {"schema_version": STATE_SCHEMA, "installed": {}, "blocks": {}}
+def wanted_on(dst: str, platform: str) -> bool:
+    owner = platform_of(dst)
+    return owner is None or platform == "both" or owner == platform
 
 
 def resolve_blocks(
@@ -101,45 +100,20 @@ def resolve_blocks(
     return [by_id[i] for i in ordered], []
 
 
-def plan_file(
-    target: Path,
-    state: Dict[str, Any],
-    block: Dict[str, Any],
-    entry: Dict[str, Any],
-    rendered: str,
-) -> Tuple[str, str]:
+def plan_file(target: Path, entry: Dict[str, Any], rendered: str) -> Tuple[str, str]:
     """Решает, что сделать с одним файлом. Возвращает (действие, объяснение)."""
     dst = target / entry["dst"]
-    record = state.get("installed", {}).get(entry["dst"])
-    new_hash = sha256_text(rendered)
 
     if not dst.exists():
         return ACTION_CREATE, "файла нет — создаём"
 
-    current_hash = sha256_text(read_text(dst))
-
-    if current_hash == new_hash:
+    if sha256_text(read_text(dst)) == sha256_text(rendered):
         return ACTION_SKIP, "уже на месте, содержимое совпадает"
 
-    if record is None:
-        return (
-            ACTION_SIDECAR,
-            "файл существует, но ставили его не мы — своё положим рядом как .new",
-        )
-
-    if record.get("sha256") != current_hash:
-        return (
-            ACTION_SIDECAR,
-            "файл правлен после установки — правка остаётся, новая версия рядом как .new",
-        )
-
-    if entry["class"] == "owned":
-        return (
-            ACTION_SIDECAR,
-            "файл ваш по смыслу (owned) — не перезаписываем, новая версия рядом как .new",
-        )
-
-    return ACTION_UPDATE, "наш файл, не тронут — обновляем"
+    return (
+        ACTION_SIDECAR,
+        "файл уже есть и отличается — он остаётся как есть, наша версия рядом как .new",
+    )
 
 
 def run(
@@ -149,6 +123,7 @@ def run(
     preset: Optional[str],
     values: Dict[str, str],
     do_apply: bool,
+    platform: str = "claude",
 ) -> int:
     action = "apply" if do_apply else "apply.dry-run"
     result = Result(action=action)
@@ -178,7 +153,6 @@ def run(
     if not blocks:
         return die(action, "не выбрано ни одного блока", "укажите --blocks или --preset")
 
-    state = load_state(target)
     planned: List[Dict[str, Any]] = []
     dirs_planned: List[str] = []
     missing_placeholders: Dict[str, List[str]] = {}
@@ -190,11 +164,13 @@ def run(
                 dirs_planned.append(name)
 
         for entry in block["files"]:
+            if not wanted_on(entry["dst"], platform):
+                continue
             src = root / block["path"] / entry["src"]
             rendered, missing = substitute(read_text(src), values)
             if missing:
                 missing_placeholders[entry["dst"]] = sorted(missing)
-            act, why = plan_file(target, state, block, entry, rendered)
+            act, why = plan_file(target, entry, rendered)
             planned.append(
                 {
                     "block": block["id"],
@@ -220,6 +196,7 @@ def run(
     if not do_apply:
         result.data = {
             "target": str(target),
+            "platform": platform,
             "blocks": [b["id"] for b in blocks],
             "dirs": dirs_planned,
             "files": [
@@ -246,25 +223,11 @@ def run(
             written.append({"path": item["dst"] + ".new", "action": ACTION_SIDECAR})
             continue
         write_text_atomic(dst, item["rendered"])
-        state.setdefault("installed", {})[item["dst"]] = {
-            "block": item["block"],
-            "class": item["class"],
-            "src": item["src"],
-            "sha256": sha256_text(item["rendered"]),
-            "installed_at": now_iso(),
-        }
         written.append({"path": item["dst"], "action": item["action"]})
-
-    for block in blocks:
-        state.setdefault("blocks", {})[block["id"]] = {
-            "installed_at": now_iso(),
-            "title": block["title"],
-        }
-    state["schema_version"] = STATE_SCHEMA
-    write_json_atomic(state_path(target), state)
 
     result.data = {
         "target": str(target),
+        "platform": platform,
         "blocks": [b["id"] for b in blocks],
         "dirs": dirs_planned,
         "written": written,
@@ -278,7 +241,10 @@ def run(
             "рядом положены новые версии, ваши файлы не тронуты: " + ", ".join(sidecars),
             "сравните и перенесите нужное вручную, потом удалите .new",
         )
-    result.next = "Проверьте результат: python bootstrap/check.py --project " + str(target)
+    result.next = (
+        f"Откройте {target} в агенте. Заготовки TASKS.md и ACCESS.md "
+        "заполняются по ходу работы, PRIORITIES.md — только после реальных ошибок агента."
+    )
     return result.emit()
 
 
@@ -294,7 +260,6 @@ def describe(planned: List[Dict[str, Any]], dirs: List[str]) -> str:
     parts = []
     labels = {
         ACTION_CREATE: "создать",
-        ACTION_UPDATE: "обновить",
         ACTION_SKIP: "пропустить",
         ACTION_SIDECAR: "положить рядом .new",
     }
@@ -327,6 +292,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--preset", help="имя пресета")
     parser.add_argument("--set", action="append", default=[], help="ИМЯ=значение для плейсхолдера")
     parser.add_argument("--values", help="JSON-файл со значениями плейсхолдеров")
+    parser.add_argument(
+        "--platform",
+        choices=PLATFORMS,
+        default="claude",
+        help="под какого агента ставить: claude (по умолчанию), codex или both",
+    )
     parser.add_argument("--apply", action="store_true", help="записать на диск (иначе сухой прогон)")
     args = parser.parse_args(argv)
 
@@ -354,6 +325,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         preset=args.preset,
         values=values,
         do_apply=args.apply,
+        platform=args.platform,
     )
 
 

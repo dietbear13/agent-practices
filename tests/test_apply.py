@@ -33,12 +33,13 @@ class ApplyCase(unittest.TestCase):
     def tearDown(self):
         self._tmp.cleanup()
 
-    def install(self, name: str = "example.ru") -> dict:
+    def install(self, name: str = "example.ru", *extra: str) -> dict:
         code, payload = run_apply(
             "--target", str(self.target),
             "--preset", "minimal",
             "--set", f"PROJECT_NAME={name}",
             "--apply",
+            *extra,
         )
         self.assertEqual(code, 0, payload)
         return payload
@@ -59,7 +60,7 @@ class TestFirstInstall(ApplyCase):
 
     def test_creates_expected_tree(self):
         self.install()
-        for name in ("CLAUDE.md", "AGENTS.md", "PRIORITIES.md", ".gitignore", ".env.example"):
+        for name in ("CLAUDE.md", "PRIORITIES.md", ".gitignore", ".env.example"):
             self.assertTrue((self.target / name).is_file(), name)
         for name in ("skills", "tools", "outputs", "tasks", "temp"):
             self.assertTrue((self.target / name).is_dir(), name)
@@ -74,17 +75,36 @@ class TestFirstInstall(ApplyCase):
             if path.is_file() and path.suffix in {".md", ".example"}:
                 self.assertNotIn("<<<", path.read_text(encoding="utf-8"), str(path))
 
-    def test_state_recorded(self):
+    def test_no_service_state_in_project(self):
+        """В проект пользователя попадают только файлы блоков, без служебного каталога."""
         self.install()
-        state = json.loads((self.target / ".agent-kit" / "state.json").read_text(encoding="utf-8"))
-        self.assertIn("CLAUDE.md", state["installed"])
-        self.assertIn("core/project-files", state["blocks"])
+        self.assertFalse((self.target / ".agent-kit").exists())
 
     def test_gitignore_closes_secrets_and_one_off_work(self):
         self.install()
         text = (self.target / ".gitignore").read_text(encoding="utf-8")
         for needed in (".env", "tasks/", "temp/"):
             self.assertIn(needed, text)
+
+
+class TestPlatform(ApplyCase):
+    def test_claude_by_default_has_no_codex_copies(self):
+        self.install()
+        self.assertFalse((self.target / "AGENTS.md").exists())
+        self.assertFalse((self.target / ".agents").exists())
+        self.assertTrue((self.target / ".claude" / "skills").is_dir())
+
+    def test_codex_only(self):
+        self.install("example.ru", "--platform", "codex")
+        self.assertTrue((self.target / "AGENTS.md").is_file())
+        self.assertTrue((self.target / ".agents" / "skills").is_dir())
+        self.assertFalse((self.target / "CLAUDE.md").exists())
+        self.assertFalse((self.target / ".claude").exists())
+
+    def test_both(self):
+        self.install("example.ru", "--platform", "both")
+        for name in ("CLAUDE.md", "AGENTS.md"):
+            self.assertTrue((self.target / name).is_file(), name)
 
 
 class TestRepeatRun(ApplyCase):

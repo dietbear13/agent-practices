@@ -187,35 +187,35 @@
           "dst": "CLAUDE.md",
           "class": "owned",
           "note": "Правила для Claude Code. Грузится в каждую сессию, поэтому короткий.",
-          "sha256": "ed7ecf54224d1ebcea690f0d6b5d218adca462141399aa2db3b483c2cb828b04"
+          "sha256": "c98d473338296396a50eef8ee7f10de9d313dd1299d5eb32d8556069770eb03d"
         },
         {
           "src": "files/CLAUDE.md.tpl",
           "dst": "AGENTS.md",
           "class": "owned",
           "note": "То же тело для Codex — один источник, два назначения.",
-          "sha256": "ed7ecf54224d1ebcea690f0d6b5d218adca462141399aa2db3b483c2cb828b04"
+          "sha256": "c98d473338296396a50eef8ee7f10de9d313dd1299d5eb32d8556069770eb03d"
         },
         {
           "src": "files/PRIORITIES.md.tpl",
           "dst": "PRIORITIES.md",
           "class": "owned",
           "note": "Ставится ПУСТЫМ. Заполняется только после реальных ошибок агента.",
-          "sha256": "8919d1432699a71ad3818c8117631d5cc6c4cf88993646701ac39f92f8f86e62"
+          "sha256": "85aa74b4b3dad9d3e1c37da24be1f7c033fa7a7332b0897c708b17cbda86770b"
         },
         {
           "src": "files/gitignore.tpl",
           "dst": ".gitignore",
           "class": "generated",
           "note": "Граница между системой и результатами работы.",
-          "sha256": "d875fa2a77831ed7b0adc38b38ef4c947c2c266f79aec51b8235a8cddcad9c1b"
+          "sha256": "b85cc8e65e85d23e5acd53b80d7abdc58f425e685ac1d51b58d88c8d1b866809"
         },
         {
           "src": "files/env.example.tpl",
           "dst": ".env.example",
           "class": "generated",
           "note": "Имена ключей без значений. Значения вписывает человек в .env.",
-          "sha256": "7602a7326dc9fa9f9649992cc1f45e846feda66b6a26b14f45cbe77291105333"
+          "sha256": "397510717426e91acf14330ed22ef88e2f01b3bee831581a55743c0450948921"
         }
       ],
       "path": "blocks/core/project-files"
@@ -430,7 +430,7 @@
           "dst": ".claude/agents/reviewer.md",
           "class": "owned",
           "note": "Проверяющий со свежим контекстом.",
-          "sha256": "004320dc406fec5b80a262efa05ddf44276e0560f700f6796622c4d950e42de0"
+          "sha256": "eeb642bd32396e812223abccea642d819e7d048b1dc76a25799abf917e4a73b8"
         },
         {
           "src": "skills/review-run/SKILL.md",
